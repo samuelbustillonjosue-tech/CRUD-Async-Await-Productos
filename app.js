@@ -34,7 +34,7 @@ app.put('/productos/:id', async (req, res) => {
         });
     }
 
-     productos[indice] = {
+    productos[indice] = {
         ...productos[indice],
         ...req.body
     };
@@ -46,6 +46,24 @@ app.put('/productos/:id', async (req, res) => {
         message: 'Producto actualizado correctamente',
         data: productos[indice]
     });
+});
+
+//FABRICANTES (BONO)
+
+// DELETE
+app.delete('/fabricantes/:id', async (req, res) => {
+    const ruta = 'data/fabricantes.json';
+    const fabricantes = await redJson(ruta);
+    const id = Number(req.params.id);
+
+    const filtroFabricantes = fabricantes.filter(fabricante => fabricante.id !== id);
+
+    if (filtroFabricantes.length !== fabricantes.length) {
+        await writeJson(ruta, filtroFabricantes);
+        res.status(200).json({status: 200, message: 'Fabricante eliminado con exito'});
+    } else {
+        res.status(404).json({status: 404, message: 'Fabricante no encontrado'});
+    }
 });
 
 const PORT = 3000;
