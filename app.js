@@ -130,6 +130,44 @@ app.put('/productos/:id', async (req, res) => {
     });
 });
 
+ // - DELETE PRODUCTOS
+
+app.delete('/productos/:id', async (req, res) => {
+    try {
+        const ruta = 'data/productos.json';
+        const productos = await redJson(ruta);
+        const id = Number(req.params.id);
+
+        const producto = productos.find(
+            p => p.id === id
+        );
+
+        if (!producto) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Producto no encontrado'
+            });
+        }
+
+        const nuevosProductos = productos.filter(
+            p => p.id !== id
+        );
+
+        await writeJson(ruta, nuevosProductos);
+
+        res.status(200).json({
+            status: 200,
+            message: 'Producto eliminado correctamente'
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error al eliminar producto'
+        });
+    }
+});
+
 const PORT = 3000;
 
 app.listen(PORT, () => {
